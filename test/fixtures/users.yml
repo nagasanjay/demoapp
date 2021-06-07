@@ -7,7 +7,7 @@ one:
   password: MyString
   userType: MyString
   locality: MyString
-  address: MyString
+  address: MyText
 
 two:
   name: MyString
@@ -16,4 +16,4 @@ two:
   password: MyString
   userType: MyString
   locality: MyString
-  address: MyString
+  address: MyText

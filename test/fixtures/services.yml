@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  servicable: one
+  servicable_type: Servicable
+  user: one
+
+two:
+  name: MyString
+  servicable: two
+  servicable_type: Servicable
+  user: two

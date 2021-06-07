@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Contact number:</strong>
+  <%= @food_service.contact_number %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @food_service.status %>
+</p>
+
+<p>
+  <strong>Time interval:</strong>
+  <%= @food_service.time_interval %>
+</p>
+
+<%= link_to 'Edit', edit_food_service_path(@food_service) %> |
+<%= link_to 'Back', food_services_path %>

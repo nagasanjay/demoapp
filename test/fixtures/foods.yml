@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  cost: 9.99
+  units: 1
+  includes: 
+  available_count: 1
+  food_service: one
+
+two:
+  name: MyString
+  cost: 9.99
+  units: 1
+  includes: 
+  available_count: 1
+  food_service: two

@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Food Services</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contact number</th>
+      <th>Status</th>
+      <th>Time interval</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @food_services.each do |food_service| %>
+      <tr>
+        <td><%= food_service.contact_number %></td>
+        <td><%= food_service.status %></td>
+        <td><%= food_service.time_interval %></td>
+        <td><%= link_to 'Show', food_service %></td>
+        <td><%= link_to 'Edit', edit_food_service_path(food_service) %></td>
+        <td><%= link_to 'Destroy', food_service, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Food Service', new_food_service_path %>

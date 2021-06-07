@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  quantity: 1
+  cost: 9.99
+  delivered: false
+  user: one
+  food: one
+
+two:
+  quantity: 1
+  cost: 9.99
+  delivered: false
+  user: two
+  food: two
