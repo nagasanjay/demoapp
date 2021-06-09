@@ -1,0 +1,25 @@
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h3 class="modal-title">Login</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <%= form_with(url: login_path, scope: :session, local: true) do |f| %>
+            <%= f.label :email %>
+            <%= f.email_field :email, class: 'form-control', required: true %>
+            <%= f.label :password %>
+            <%= f.password_field :password, class: 'form-control', required: true %>
+        </div>
+        <div class="modal-footer">
+            <%= f.submit "Log in", class: "btn btn-primary" %>
+        <%end%>
+        <a data-toggle="modal" data-target="#signupModal"><p data-toggle="modal" data-target="#loginModal"> New user?</p></a>
+        </div>
+    </div>
+  </div>
+</div>
+

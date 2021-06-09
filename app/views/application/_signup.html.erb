@@ -1,0 +1,35 @@
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h3 class="modal-title">Signup</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <%= form_with(model: @user, scope: :user, url: '/user', local: true) do |f| %>
+            <%= f.label :name %>
+            <%= f.text_field :name, required: true %><br />
+            <%= f.label :email %>
+            <%= f.email_field :email, required: true %><br />
+            <%= f.radio_button :userType, 'user', :checked => true %> 
+            <%= label :userType_user, 'user' %>
+            <%= f.radio_button :userType, 'vendor' %>
+            <%= label :userType_cendor, 'vendor' %><br />
+            <%= f.label :password %>
+            <%= f.password_field :password, required: true %><br />
+            <%= f.label :area %>
+            <%= f.text_field :locality, required: true %><br />
+            <%= f.label :address %>
+            <%= f.text_field :address, required: true %><br />
+            <%= f.label :phone_number %>
+            <%= f.text_field :phone_number, required: true %><br />
+        </div>
+        <div class="modal-footer">
+            <%= submit_tag "Signup"%>
+        <%end%>
+        </div>
+    </div>
+  </div>
+</div>

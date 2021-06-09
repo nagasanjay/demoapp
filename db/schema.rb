@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_07_141526) do
+ActiveRecord::Schema.define(version: 2021_06_08_044113) do
 
   create_table "food_services", charset: "latin1", force: :cascade do |t|
     t.string "contact_number"
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2021_06_07_141526) do
     t.string "name"
     t.string "email"
     t.string "phone_number"
-    t.string "password"
+    t.string "password_digest"
     t.string "userType"
     t.string "locality"
     t.text "address"
