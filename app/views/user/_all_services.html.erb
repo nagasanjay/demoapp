@@ -1,0 +1,42 @@
+<div>
+    <h2>Services</h2>
+    <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+        <!--Indicators-->
+            <% cards = 4; rem = @services.count%cards; q = @services.count/cards; %>
+            <% i = 0; num = rem == 0 ? q : q+1; %>
+            <ol class="carousel-indicators">
+                <% until i >= num %>
+                    <li data-target="#multi-item-example" data-slide-to="<%= i %>" class="<%= if i == 0 then 'active' end %>"></li>
+                <% i += 1; end %>
+            </ol>
+        <!--/.Indicators-->
+
+        <!--Slides-->
+        <div class="carousel-inner" role="listbox">
+            <!--First slide-->
+            <div class="carousel-item active">
+            <% @services.each_with_index do |service, index| %>
+                <div class="col-md-3" style="float:left">
+                <div class="card mb-2">
+                    <div class="card-header">
+                    <strong> <%= service.name %> </strong>
+                    </div>
+                    <div class="card-body">
+                        <strong>Type :</strong><%= service.servicable_type %><br/>
+                        <strong>Locality :</strong><%= service.servicable.locality %><br />
+                        <a onclick='showModal(<%= service.id %>)'><u>Show details</u></a>
+                    </div>
+                </div>
+                </div>
+                <% if index%cards == cards-1 %>
+                    </div>
+                    <!--/.First slide-->
+                    <!--Second slide-->
+                    <div class="carousel-item">
+                <% end %>
+            <% end %>
+            </div>
+        </div>
+        <!--/.Slides-->
+    </div>
+</div>

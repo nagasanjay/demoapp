@@ -9,22 +9,28 @@
         </div>
         <div class="modal-body">
         <%= form_with(model: @user, scope: :user, url: '/user', local: true) do |f| %>
-            <%= f.label :name %>
-            <%= f.text_field :name, required: true %><br />
-            <%= f.label :email %>
-            <%= f.email_field :email, required: true %><br />
-            <%= f.radio_button :userType, 'user', :checked => true %> 
-            <%= label :userType_user, 'user' %>
-            <%= f.radio_button :userType, 'vendor' %>
-            <%= label :userType_cendor, 'vendor' %><br />
-            <%= f.label :password %>
-            <%= f.password_field :password, required: true %><br />
-            <%= f.label :area %>
-            <%= f.text_field :locality, required: true %><br />
-            <%= f.label :address %>
-            <%= f.text_field :address, required: true %><br />
-            <%= f.label :phone_number %>
-            <%= f.text_field :phone_number, required: true %><br />
+            <%= f.label :name, class: "col-3" %>
+            <%= f.text_field :name, required: true, class: "col-auto" %><br />
+            <%= f.label :email, class: "col-3" %>
+            <%= f.email_field :email, required: true, class: "col-auto" %><br />
+            <div class= "row">
+            <%= f.label :User_type, class: "col-3", style: "text-align:center" %>
+            <div class="col-3">
+            <%= f.radio_button :userType, 'user', :checked => true, class: "col-1" %> 
+            <%= label :userType_user, 'user', class: "col-1" %>
+            </div>
+            <div class="col-3">
+            <%= f.radio_button :userType, 'vendor', class: "col-1" %>
+            <%= label :userType_vendor, 'vendor', class: "col-1" %><br />
+            </div></div>
+            <%= f.label :password, class: "col-3" %>
+            <%= f.password_field :password, required: true, class: "col-auto" %><br />
+            <%= f.label :area, class: "col-3" %>
+            <%= f.text_field :locality, required: true, class: "col-auto" %><br />
+            <%= f.label :address, class: "col-3" %>
+            <%= f.text_field :address, required: true, class: "col-auto" %><br />
+            <%= f.label :phone_number, class: "col-3" %>
+            <%= f.text_field :phone_number, required: true, class: "col-auto" %><br />
         </div>
         <div class="modal-footer">
             <%= submit_tag "Signup"%>

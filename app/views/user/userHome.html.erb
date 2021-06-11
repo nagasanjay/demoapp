@@ -1,0 +1,7 @@
+<div class="container"> 
+    <br />
+    <% @services = Service.all %>
+    <%= render 'user/all_services' %>
+    <%= render 'user/food_services_in_your_area' %>
+    <%= render 'user/show_details' %>
+</div>

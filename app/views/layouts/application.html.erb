@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Demoapp</title>
+    <title>Sharing</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -9,6 +9,7 @@
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     
+    <link rel="stylesheet" href="https://mdbootstrap.com/api/snippets/static/download/MDB-Pro_4.8.1/css/mdb.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -17,7 +18,7 @@
   <body>
     <%= render 'layouts/nav' %>
     <% flash.each do |message_type, message| %>
-      <div class="alert alert-dismissible alert-<%= message_type %>" role="alert">
+      <div class="alert alert-dismissible alert-<%= message_type %> center-block" role="alert">
       <%= message %>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -25,6 +26,9 @@
     </div>
     <% end %>
     <%= yield %>
+    <%= render 'application/signup' %>
+    <%= render 'application/login' %>
+    <%= render 'application/logout' %>
     <footer>
     </footer>
   </body>

@@ -1,0 +1,74 @@
+<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="show-service-name"></h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body container" id="model_body">
+            <div class="row"><b class="col">Status: </b><p id="status" class="col"></p></div>
+            <div class="row"><b class="col">Locality: </b><p id="locality" class="col"></p></div>
+            <div class="row"><b class="col">Contact Number: </b><p id="contact" class="col"></p></div>
+            
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary">Order</button>
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+function showModal(service_id){
+    $.get( "/service/"+service_id, function( data ) {
+
+        if(data.type == "FoodService"){
+            $('#removable').remove()
+            $('#show-service-name').html("<b>"+data.name+"</b>")
+            $('#status').html(data.status)
+            $('#locality').html(data.locality)
+            $('#contact').html(data.contact_number)
+            $('#model_body').append('<div class="row" id="removable"><b class="col">Foods: </b><div id="foods" class="col"></div></div>')
+
+            $("#foods").html("<ul>")
+            $.each(data.foods, (index, food) => {
+                $("#foods").append("<li>"+food+"</li>");
+            })
+            $("#foods").append("</ul>")
+        } else if(data.type == "StayService") {
+            $('#removable').remove()
+            $('#show-service-name').html("<b>"+data.name+"</b>")
+            $('#locality').html(data.locality)
+            $('#contact').html(data.contact_number)
+            $('#status').html(data.available == true ? "Available" : "Not Available")
+            $('#model_body').append('<div class="row" id="removable"><b class="col">Stay Options: </b><div id="stay" class="col"></div></div>')
+
+            $("#stay").html("<ul>")
+            $.each(data.stay_options, (index, stay) => {
+                s = "<li><b>"+stay.name+"</b><br>";
+                ss = "Amenities : ";
+                stay.includes.amenities.forEach((value)=>{
+                    ss += value + " "
+                })
+                ss += "<br>"
+                sss = "Bed Types :<ul>"
+                for (key in stay.includes.bed_type) {
+                    if(stay.includes.bed_type[key]){
+                        sss += "<li>"
+                        console.log(key)
+                        sss += key + " : " + stay.includes.bed_type[key] + "</li>";
+                    }
+                }
+                sss += "</li></ul>"
+                s = s + ss + sss + "</li>"
+                $("#stay").append(s);
+            })
+        }
+        
+        
+        $('#serviceModal').modal('show')
+    });
+    
+}
+</script>

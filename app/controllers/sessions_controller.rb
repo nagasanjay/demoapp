@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
 		if @user && @user.authenticate(params[:session][:password])
 			reset_session
 			log_in @user
-			redirect_to '/'
+			redirect_to '/home'
 		else
 			flash[:danger] = "AUthentication failed"
 			redirect_to '/'

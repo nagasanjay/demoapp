@@ -3,6 +3,7 @@ class CreateFoodServices < ActiveRecord::Migration[6.1]
     create_table :food_services do |t|
       t.string :contact_number
       t.string :status
+      t.string :locality
       t.json :time_interval
 
       t.timestamps

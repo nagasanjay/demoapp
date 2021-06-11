@@ -6,6 +6,11 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+OrderType.delete_all
+StayOrder.delete_all
+StayOption.delete_all
+StayService.delete_all
+FoodOrder.delete_all
 Order.delete_all
 Food.delete_all
 FoodService.delete_all
@@ -34,6 +39,7 @@ loc = Array["velachery", "Saidapet", "Guindy"]
         @food_service = FoodService.create!(
             contact_number: @user.phone_number,
             status: "available",
+            locality: loc[n%3],
             time_interval: {
                 timing: [{
                     start: "08:00",
@@ -47,7 +53,7 @@ loc = Array["velachery", "Saidapet", "Guindy"]
             servicable: @food_service
         )
 
-        @food_service.food.create!([{
+        @food_service.foods.create!([{
             name: "idly",
             cost: 20,
             units: 2,
@@ -89,20 +95,130 @@ loc = Array["velachery", "Saidapet", "Guindy"]
             available_count: 30
         }])
 
-    else 
-        Order.create!([{
-            quantity: 2,
-            cost: Food.first.cost * 2,
-            delivered: false,
-            food_id: Food.first.id,
-            user_id: @user.id
+        @stay_service = StayService.create!({
+            contact_number: @user.phone_number,
+            status: "available",
+            locality: loc[n%3],
+            available: true
+        })
+
+        @user.services.create!(
+            name: "#{name} Stay Service",
+            servicable: @stay_service
+        )
+
+        @stay_service.stay_options.create!([{
+            name: "Suite A",
+            cost: 500,
+            room_number: "A1",
+            bed_count: 1,
+            available: true,
+            includes: {
+                amenities: ["AC", "TV"],
+                bed_type: {
+                    king_size: 0,
+                    queen_size: 0,
+                    single: 1,
+                    double: 0
+                }
+            }
         },{
-            quantity: 1,
-            cost: Food.last.cost,
-            delivered: true,
-            food_id: Food.last.id,
-            user_id: @user.id
+            name: "Suite A",
+            cost: 500,
+            room_number: "A2",
+            bed_count: 1,
+            available: true,
+            includes: {
+                amenities: ["AC", "TV"],
+                bed_type: {
+                    king_size: 0,
+                    queen_size: 0,
+                    single: 1,
+                    double: 0
+                }
+            }
+        },{
+            name: "Suite B",
+            cost: 1000,
+            room_number: "B1",
+            bed_count: 2,
+            available: true,
+            includes: {
+                amenities: ["AC", "TV"],
+                bed_type: {
+                    king_size: 0,
+                    queen_size: 0,
+                    single: 2,
+                    double: 0
+                }
+            }
+        },{
+            name: "Suite B",
+            cost: 1000,
+            room_number: "B2",
+            bed_count: 2,
+            available: true,
+            includes: {
+                amenities: ["AC", "TV"],
+                bed_type: {
+                    king_size: 0,
+                    queen_size: 0,
+                    single: 2,
+                    double: 0
+                }
+            }
+        },{
+            name: "Suite C",
+            cost: 1500,
+            room_number: "C1",
+            bed_count: 1,
+            available: true,
+            includes: {
+                amenities: ["AC", "TV"],
+                bed_type: {
+                    king_size: 1,
+                    queen_size: 0,
+                    single: 0,
+                    double: 0
+                }
+            }
         }])
+
+    else
+        
+        @order = Order.create!(user_id: @user.id)
+
+        @food_orders = FoodOrder.create!([{
+            food_id: Food.first.id,
+            quantity: 2,
+            cost: Food.first.cost * 2
+        },{
+            food_id: Food.last.id,
+            quantity: 1,
+            cost: Food.last.cost
+        }])
+
+        for fo in @food_orders
+            @order.order_types.create!({
+                orderable: fo
+            })
+        end
+        
+        for order_type in @order.order_types
+            cost = @order.cost ? @order.cost : 0
+            @order.cost =  cost + order_type.orderable.cost
+        end
+
+        @order.delivered = false
+        @order.save()
+
+        @stay_order = Order.create!(user_id: @user.id)
+
+        @s_order = StayOption.last.stay_orders.create!({cost: StayOption.last.cost})
+
+        @stay_order.order_types.create!({orderable: @s_order})
+        @stay_order.delivered = true
+        @stay_order.save()
 
     end
 end
@@ -111,4 +227,8 @@ p "Created #{User.count} users"
 p "Created #{Service.count} services"
 p "Created #{FoodService.count} food services"
 p "Created #{Food.count} foods"
-p "Creatd #{Order.count} orders"
+p "Created #{Order.count} orders"
+p "Created #{FoodOrder.count} food orders"
+p "Created #{StayService.count} stay services"
+p "Created #{StayOption.count} stay options"
+p "Created #{StayOrder.count} stay orders"
