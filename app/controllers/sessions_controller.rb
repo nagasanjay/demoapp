@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
 			log_in @user
 			redirect_to '/home'
 		else
-			flash[:danger] = "AUthentication failed"
+			flash[:danger] = "Authentication failed"
 			redirect_to '/'
 		end
 	end

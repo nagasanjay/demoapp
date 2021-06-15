@@ -1,5 +1,5 @@
 <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-xl modal-dialog-centered " role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title" id="serviceName"></h3>
@@ -7,11 +7,145 @@
             <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="modal-body container" id="model_body">    
+        <div class="modal-body container-fluid" id="model_body">
+        <div class="row">
+        <div class="split left col">
+            <div class="centered row" id="options">
+                
+            </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary">Order</button>
+        <div class="split right col">
+            <div class="centered" id="order">
+                
+            </div>
+        </div>    
+        </div>
+        </div>
+        <div class="modal-footer" id="fitOrderButton">
+            
         </div>
     </div>
   </div>
 </div>
+<script>
+function orderFood(service_id){
+    console.log(service_id)
+    $.get( "/service/"+service_id, function( data ) {
+        // menu
+        console.log(data.ID);
+        console.log(data.type);
+        ID = data.ID;
+        stype= data.type;
+        s = '<table class="table table-bordered"><thead class="thead-dark mt-10"><tr><th scope="col">food</th><th scope="col">units</th><th scope="col">includes</th><th scope="col">cost</th><th scope="col">available</th></tr></thead><tbody>'
+        $.each(data.foods, (index, food) => {
+            s += "<tr>"
+            s += "<td>"+food.name+"</td>"
+            s += "<td>"+food.units+"</td>"
+            s += "<td>"+food.includes.others.toString()+"</td>"
+            s += "<td>"+food.cost+"</td>"
+            s += "<td>"+food.available_count+"</td>"
+            s += "</tr>"
+        })
+        $("#options").html(s + "</tbody></table>")
+
+        // order
+        s = "<form><div class='form-group'>"
+        foodNames = []
+        $.each(data.foods, (index, food) => {
+            foodNames.push(food.name)
+            s += "<div class='row mb-2'>";
+            s += "<label for='"+food.name+"' class='col'>"+food.name+"</label>";
+            s += "<input type='number' class='form-control col' id='"+food.name+"' min='0' max='"+food.available_count+"' onkeyup=imposeMinMax(this)>";
+            s += "</div>";
+        })
+        s += "</div></form>"
+        $("#order").html(s);
+        //document.getElementById("orderButton").addEventListener("click", "placeOrder(foodNames)");
+        $('#fitOrderButton').html('<button class="btn btn-primary" data-dismiss="modal" onclick="placeOrder(ID, stype, foodNames)" >Order</button>')
+    });
+    
+    $('#orderModal').modal('show')
+};
+function orderStay(service_id){
+    console.log(service_id)
+    $.get( "/service/"+service_id, function( data ) {
+        // menu
+        console.log(data.ID);
+        console.log(data.type);
+        ID = data.ID;
+        stype= data.type;
+        s = '<table class="table table-bordered"><thead class="thead-dark"><tr><th scope="col">Stay option</th><th scope="col">Available</th><th scope="col">Amenities</th><th scope="col">cost</th><th scope="col">Beds</th></tr></thead><tbody>'
+        $.each(data.stay_options, (index, option) => {
+            s += "<tr>";
+            s += "<td>"+option.name+"</td>";
+            s += "<td>"+option.available+" / "+option.count+"</td>";
+            s += "<td>"+option.includes.amenities.toString()+"</td>";
+            s += "<td>"+"Rs. "+option.cost+" / day"+"</td>";
+            sss = ""
+            for (key in option.includes.bed_type) {
+                if(option.includes.bed_type[key]){
+                    console.log(key)
+                    sss += key + " : " + option.includes.bed_type[key] + ", ";
+                }
+            };
+            s += "<td>"+sss+"</td>";
+            s += "</tr>";
+        })
+        $("#options").html(s + "</tbody></table>")
+
+        //order
+        s = "<form><div class='form-group'>"
+        stayNames = []
+        $.each(data.stay_options, (index, option) => {
+            stayNames.push(option.name)
+            s += "<div class='row'>";
+            s += "<label for='"+option.name+"' class='col'>"+option.name+"</label>";
+            s += "<input type='number' class='form-control col' id='"+option.name+"' min='0' max='"+option.available+"' onkeyup=imposeMinMax(this)>";
+            s += "</div>";
+        })
+        s += "</div></form>"
+        $("#order").html(s);
+        //document.getElementById("orderButton").addEventListener("click", "placeOrder(foodNames)");
+        $('#fitOrderButton').html('<button class="btn btn-primary" data-dismiss="modal" onclick="placeOrder(ID, stype, stayNames)" >Order</button>')
+    });
+    $('#orderModal').modal('show');
+};
+
+function imposeMinMax(el){
+  if(el.value != ""){
+    if(parseInt(el.value) < parseInt(el.min)){
+      el.value = el.min;
+    }
+    if(parseInt(el.value) > parseInt(el.max)){
+      el.value = el.max;
+    }
+  }
+};
+
+function placeOrder(id, type, names) {
+    var items = [];
+    $.each(names, (index, name) => {
+        val = document.getElementById(name).value;
+        console.log(items);
+        if(val && val != "0")  {  
+            items.push({name: name, count: val});
+            console.log(items);
+        }
+    });
+    
+    order = {
+        service_id: id,
+        items: items
+    };
+    console.log(order);
+    $.ajax({ 
+        url: '/order/'+type,
+        type: 'POST',
+        data: order,
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        success: function(response) {
+            //alert(response);
+        }
+    });
+}
+</script>

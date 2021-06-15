@@ -1,13 +1,12 @@
 class UserController < ApplicationController
 
     def create
-        byebug
         @user = User.new(user_params)
         if @user.save
             flash[:success] = "Signed up successfully.!"
             reset_session
 			log_in @user
-            render "home"
+            redirect_to '/home'
         else
             flash[:danger] = "Signup Failed"
             redirect_to '/'
@@ -16,9 +15,9 @@ class UserController < ApplicationController
 
     def home
         if logged_in?
-            if current_user.userType == "user"
+            if user_type == "user"
                 render "userHome"
-            elsif current_user.userType == "vendor"
+            elsif user_type == "vendor"
                 render "vendorHome"
             end
         else
@@ -31,6 +30,13 @@ class UserController < ApplicationController
     end
 
     def vendorHome
+    end
+
+    def changeHome
+        if logged_in? and @current_user.userType == "vendor"
+            session[:user_type] = session[:user_type] == "vendor" ? "user" : "vendor"
+        end
+        return redirect_to '/home'
     end
 
     def show

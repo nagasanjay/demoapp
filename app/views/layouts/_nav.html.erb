@@ -6,13 +6,16 @@
         <div class="collapse navbar-collapse row" id="collapsibleNavbar">
         <div class="col"> 
             <% if logged_in? %>
-                <button class="btn btn-outline-light btn-sm">search</a>
-                <button class="btn btn-outline-light btn-sm">profile</a>
-                <button class="btn btn-outline-light btn-sm">orders</a>
-                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#logoutModal">logout</a>
+                <% if @current_user.userType == "vendor" %>
+                <a type="button" class="btn btn-outline-light btn-sm" href="/changehome">Change Home</a>
+                <% end %>
+                <button class="btn btn-outline-light btn-sm">search</button>
+                <button class="btn btn-outline-light btn-sm">profile</button>
+                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#showOrdersModal">orders</button>
+                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#logoutModal">logout</button>
             <% else %>
-                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#loginModal">login</a>
-                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#signupModal">signup</a>
+                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#loginModal">login</button>
+                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#signupModal">signup</button>
             <% end %>
         </div>
     </div>  

@@ -1,0 +1,69 @@
+<div class="modal fade" id="addFoodModal" tabindex="-1" role="dialog" aria-labelledby="addFoodModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="show-service-name">Add food</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body container" id="model_body">
+        <form autocomplete="off" action="#" id="foodForm">
+        <div class="form-group row">
+            <label for="food-name" class="col-4">Name</label>
+            <input type="text" class="form-control col-7" id="food-name" placeholder="name" required>
+        </div>
+        <div class="form-group row">
+            <label for="unit" class="col-4">Unit</label>
+            <input type="text" pattern="\d*" class="form-control col-7" id="unit" placeholder="units" required>
+        </div>
+        <div class="form-group row">
+            <label for="cost" class="col-4">Cost</label>
+            <input type="text" pattern="\d*" class="form-control col-7" id="cost" placeholder="cost" required>
+        </div>
+        <div class="form-group row">
+            <label for="includes" class="col-4">Includes</label>
+            <input type="text" class="form-control col-7" id="includes" placeholder="Eg: Sambar, Chutney" >
+        </div>
+        <div class="form-group row">
+            <label for="available" class="col-4">Available counts</label>
+            <input type="text" pattern="\d*" class="form-control col-7" id="available" placeholder="available" required>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" name="submit">Add</button>
+        </form>
+        </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function addFood(service_id){
+    $('#foodForm').attr("onsubmit", "addFoodToService("+service_id+")")
+    $("#addFoodModal").modal("show")
+}
+
+function addFoodToService(service_id) {
+    $("#addFoodModal").modal("hide")
+    includes = $("#includes").val().split(',').map(s => s.trim());
+    food = {
+        name: $("#food-name").val(),
+        units: $("#unit").val(),
+        cost: $("#cost").val(),
+        includes: includes,
+        available_count: $("#available").val()
+    }
+
+    console.log(food)
+    $.ajax({ 
+        url: '/food/'+service_id,
+        type: 'POST',
+        data: food,
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        success: function(response) {
+            return false
+        }
+    });
+}
+</script>

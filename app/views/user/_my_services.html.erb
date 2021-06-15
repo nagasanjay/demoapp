@@ -1,0 +1,46 @@
+<div>
+    <h2>Your Services <i class="fa fa-plus" data-toggle="modal" data-target="#addServiceModal"></i></h2>
+    <style scoped>
+        @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css);
+        @import url(https://mdbootstrap.com/api/snippets/static/download/MDB-Pro_4.8.1/css/mdb.min.css);
+    </style>
+    <% @nearby_services = @current_user.services %>
+    <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+    <!--Indicators-->
+        <% cards = 4; rem = @nearby_services.count%cards; q = @nearby_services.count/cards; %>
+        <% i = 0; num = rem == 0 ? q : q+1; %>
+        <ol class="carousel-indicators">
+            <% until i >= num %>
+                <li data-target="#multi-item-example" data-slide-to="<%= i %>" class="<%= if i == 0 then 'active' end %>"></li>
+            <% i += 1; end %>
+        </ol>
+    <!--/.Indicators-->
+
+    <!--Slides-->
+    <div class="carousel-inner" role="listbox">
+        <!--First slide-->
+        <div class="carousel-item active">
+        <% @nearby_services.each_with_index do |service, index| %>
+            <div class="col-md-3 card-item" style="float:left">
+                <div class="card mb-2">
+                    <div class="card-header">
+                    <strong> <%= service.name %> </strong>
+                    </div>
+                    <div class="card-body">
+                        <strong>Status :</strong><%= service.servicable.status %><br />
+                        <a onclick='showVendorModal(<%= service.id %>)'><u>Show details</u></a>
+                    </div>
+                </div>
+            </div>
+        <% if index%cards == cards-1 %>
+            </div>
+            <!--/.First slide-->
+            <!--Second slide-->
+            <div class="carousel-item">
+        <% end %>
+        <% end %>
+    </div>
+    <!--/.Slides-->
+
+    </div>
+</div>

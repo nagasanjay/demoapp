@@ -1,5 +1,5 @@
-<div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+<div class="modal fade" id="vendorServiceModal" tabindex="-1" role="dialog" aria-labelledby="vendorServiceModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title" id="show-service-name"></h3>
@@ -14,15 +14,14 @@
             
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" data-dismiss="modal" id="orderButton">Order</button>
+            <button class="btn btn-primary" data-dismiss="modal" id="orderButton">Add</button>
         </div>
     </div>
   </div>
 </div>
 <script>
-function showModal(service_id){
+function showVendorModal(service_id){
     $.get( "/service/"+service_id, function( data ) {
-
         if(data.type == "FoodService"){
             $('#removable').remove()
             $('#show-service-name').html("<b>"+data.name+"</b>")
@@ -36,16 +35,18 @@ function showModal(service_id){
                 $("#foods").append("<li>"+food.name+"</li>");
             })
             $("#foods").append("</ul>")
-            $("#orderButton").attr("onclick","orderFood("+service_id+")");
+            $("#orderButton").attr("onclick","addFood("+service_id+")");
         } else if(data.type == "StayService") {
-            $('#removable').remove()
-            $('#show-service-name').html("<b>"+data.name+"</b>")
-            $('#locality').html(data.locality)
-            $('#contact').html(data.contact_number)
-            $('#status').html(data.available == true ? "Available" : "Not Available")
-            $('#model_body').append('<div class="row" id="removable"><b class="col">Stay Options: </b><div id="stay" class="col"></div></div>')
+            $('#removable').remove();
+            $('#show-service-name').html("<b>"+data.name+"</b>");
+            $('#locality').html(data.locality);
+            $('#contact').html(data.contact_number);
+            $('#status').html(data.available == true ? "Available" : "Not Available");
+            $('#model_body').append('<div class="row" id="removable"><b class="col">Stay Options: </b><div id="stay" class="col"></div></div>');
 
-            $("#stay").html("<ul>")
+            $("#stay").html("<ul>");
+            console.log(data);
+
             $.each(data.stay_options, (index, stay) => {
                 s = "<li><b>"+stay.name+"</b><br>";
                 ss = "Amenities : ";
@@ -65,10 +66,10 @@ function showModal(service_id){
                 s = s + ss + sss + "</li>"
                 $("#stay").append(s);
             })
-            $("#orderButton").attr("onclick","orderStay("+service_id+")");
+            $("#orderButton").attr("onclick","addStay("+service_id+")");
         }
         
-        $('#serviceModal').modal('show')
+        $('#vendorServiceModal').modal('show')
     });
     
 }

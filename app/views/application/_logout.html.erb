@@ -8,13 +8,24 @@
         </button>
         </div>
         <div class="modal-body">
-        <%= form_with(url: logout_path, method: :delete) do |f| %>
             <strong> Are you sure ? You want to logout ? </strong>
         </div>
         <div class="modal-footer">
-            <%= f.submit "Log out", class: "btn btn-primary" %>
-        <%end%>
+            <button type="sutton" class="btn btn-primary" onclick="logout()">logout</button>
         </div>
     </div>
   </div>
 </div>
+<script>
+function logout() {
+  console.log("logout")
+  $.ajax({ 
+    url: '/logout',
+    type: 'DELETE',
+    beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+    success: function(response) {
+        return false
+    }
+  });
+}
+</script>

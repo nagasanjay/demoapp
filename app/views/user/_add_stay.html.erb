@@ -1,0 +1,117 @@
+<div class="modal fade" id="addStayModal" tabindex="-1" role="dialog" aria-labelledby="addStayModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="show-service-name">Add Stay</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body container" id="model_body">
+        <form autocomplete="off" action="#" id="stayForm">
+        <div class="form-group row">
+            <label for="food-name" class="col-4">Name</label>
+            <input type="text" class="form-control col-7" id="stay-name" placeholder="name" required>
+        </div>
+        <div class="form-group row">
+            <label for="room" class="col-4">Room Number</label>
+            <input type="text" class="form-control col-7" id="room" placeholder="units" required>
+        </div>
+        <div class="form-group row">
+            <label for="cost" class="col-4">Cost</label>
+            <input type="text" pattern="\d*" class="form-control col-7" id="stay-cost" placeholder="cost" required>
+        </div>
+        <div class="form-group row">
+            <label for="stay-includes" class="col-4">Includes</label>
+            <input type="text" class="form-control col-7" id="stay-includes" placeholder="Eg: AC, Balcony" >
+        </div>
+        <div class="form-group row">
+            <label for="includes" class="col-4">Beds</label><br />
+            
+            <div class="col-7" id="newRow">
+                <div id="inputFormRow">
+                    <div class="input-group">
+                        <div class="form-group row">
+                            <input type="text" class="form-control col-4" placeholder="bed type" id="btype" required>
+                            <input type="text" pattern="\d" class="form-control col-3" placeholder="count" id="bcount" required>
+                            <div class="input-group-append col-2">                
+                                <button id="removeRow" type="button" class="btn btn-danger btn-sm">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="addRow" type="button" class="btn btn-info btn-sm">Add Row</button>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" name="submit">Add room</button>
+        </form>
+        </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function addStay(service_id){
+    $('#stayForm').attr("onsubmit", "addStayToService("+service_id+")")
+    $("#addStayModal").modal("show")
+}
+
+function addStayToService(service_id) {
+    $("#addStayModal").modal("hide")
+    let bed = {};
+    let type;
+    let i = 0;
+    let id;
+    $('#newRow input[type=text]').each(function () {
+        console.log(this)
+        id = $(this).attr("id")
+        if(id == "bcount"){
+            bed[type] = $(this).val();
+        }else{
+            type = $(this).val();
+        }
+    });
+    amenities = $("#stay-includes").val().split(',').map(s => s.trim());
+    stay = {
+        name: $("#stay-name").val(),
+        room_number: $("#room").val(),
+        cost: $("#stay-cost").val(),
+        includes: {
+            amenities: amenities,
+            bed_type: bed
+        }
+    }
+
+    console.log(stay)
+    $.ajax({ 
+        url: '/stay/'+service_id,
+        type: 'POST',
+        data: stay,
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        success: function(response) {
+            return false
+        }
+    });
+   return false;
+}
+// add row
+$("#addRow").click(function () {
+    var html = '';
+    html += '<div id="inputFormRow">';
+    html += '<div class="input-group">';
+    html += '<div class="form-group row"><input type="text" class="form-control col-4" placeholder="bed type" id="btype"><input type="text" pattern="\\d" class="form-control col-3" placeholder="cost" id="bcount" required>';
+    html += '<div class="input-group-append col-2">';
+    html += '<button id="removeRow" type="button" class="btn btn-danger btn-sm">Remove</button>';
+    html += '</div></div>';
+    html += '</div>';
+
+    $('#newRow').append(html);
+});
+
+// remove row
+$(document).on('click', '#removeRow', function () {
+    $(this).closest('#inputFormRow').remove();
+});
+</script>
