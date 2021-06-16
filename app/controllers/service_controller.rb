@@ -101,13 +101,48 @@ class ServiceController < ApplicationController
                 flash[:warning] = "nothing to search"
                 return redirect_to "/home"   
             else  
-                @parameter = params["search"].downcase  
-                @results = Service.all.where("lower(name) LIKE :search", search: @parameter)
-                
-                render :json => @results
+                @parameter = params["search"].downcase
+                response = Array.new
+
+                if params["through"] == "name"
+                    @results = Service.all.where("lower(name) LIKE :search", search: "%#{@parameter}%")
+                    
+                    @results.each do |result|
+                        response.push({
+                            name: result.name,
+                            area: result.servicable.locality,
+                            id: result.id
+                        })
+                    end
+                elsif params["through"] == "locality"
+                    @results = FoodService.all.where("lower(locality) LIKE :search", search: "%#{@parameter}%")
+
+                    @results.each do |result|
+                        response.push({
+                            name: result.service.name,
+                            area: result.locality,
+                            id: result.service.id
+                        })
+                    end
+
+                    @results = StayService.all.where("lower(locality) LIKE :search", search: "%#{@parameter}%")
+
+                    @results.each do |result|
+                        response.push({
+                            name: result.service.name,
+                            area: result.locality,
+                            id: result.service.id
+                        })
+                    end
+                else
+                    return render => response 
+                end
+
+                render :json => response
             end
         else
             flash[:danger] = "loggin first"
             return redirect_to "/"  
+        end
     end
 end

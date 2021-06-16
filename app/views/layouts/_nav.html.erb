@@ -7,11 +7,16 @@
         <div class="col"> 
             <% if logged_in? %>
                 <% if @current_user.userType == "vendor" %>
-                <a type="button" class="btn btn-outline-light btn-sm" href="/changehome">Change Home</a>
+                    <a type="button" class="btn btn-outline-light btn-sm" href="/changehome">Change Home</a>
                 <% end %>
-                <button class="btn btn-outline-light btn-sm">search</button>
-                <button class="btn btn-outline-light btn-sm">profile</button>
-                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#showOrdersModal">orders</button>
+                <% if user_type == "user" %>
+                    <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#searchModal">search</button>
+                    <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#showOrdersModal">orders</button>
+                <% end %>
+                <% if user_type == "vendor" %>
+                    <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#showVendorOrdersModal">orders</button>
+                <% end %>
+                <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#profileModal">profile</button>
                 <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#logoutModal">logout</button>
             <% else %>
                 <button class="btn btn-outline-light btn-sm" data-toggle="modal" data-target="#loginModal">login</button>

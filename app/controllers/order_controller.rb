@@ -2,7 +2,7 @@ class OrderController < ApplicationController
     def create
         if logged_in?
             service_id = params["service_id"]
-            servicable_id = Service.find(service_id).servicable_id
+            service = Service.find(service_id)
             service_type = params["service"]
             items = params["items"]
 
@@ -12,9 +12,9 @@ class OrderController < ApplicationController
                 return redirect_to "/"
             end
 
-            if service_type == "FoodService" and orderFood(items:items, service_id: servicable_id)
+            if service_type == "FoodService" and orderFood(items:items, service: service)
                 flash[:success] = "Order placed successfully"
-            elsif service_type == "StayService" and orderStay(items:items, service_id: servicable_id)
+            elsif service_type == "StayService" and orderStay(items:items, service: service)
                     flash[:success] = "Order placed successfully"
             else
                 flash[:danger] = "Order failed"
@@ -26,9 +26,74 @@ class OrderController < ApplicationController
         end
     end
 
+    def deliver
+        if logged_in? and user_type == "vendor"
+            order_id = params["order_id"].to_i
+            order = Order.find(order_id)
+            order.delivered = true
+            if order.save()
+                flash[:success] = "Order delivered"
+            else
+                flash[:danger] = "Failed to deliver"
+            end
+            return redirect_to '/home'
+        else
+            flash[:danger] = "Loggin as vendor"
+            return redirect_to '/'
+        end
+    end
+
+    def checkin
+        if logged_in? and user_type == "vendor"
+            order_id = params["order_id"].to_i
+            order = Order.find(order_id)
+
+            for stay in order.order_types
+                stay.orderable.checkin = DateTime.now
+                if !stay.orderable.save()
+                    flash[:danger] = "Failed to checkin"
+                    return redirect_to '/home'
+                end
+            end
+
+            flash[:success] = "Checked in"
+            return redirect_to '/home'
+        else
+            flash[:danger] = "Loggin as vendor"
+            return redirect_to '/'
+        end
+    end
+
+    def checkout
+        if logged_in? and user_type == "vendor"
+            order_id = params["order_id"].to_i
+            order = Order.find(order_id)
+
+            for stay in order.order_types
+                stay.orderable.checkout = DateTime.now
+                stay.orderable.stay_option.available = true
+                if !stay.orderable.save()
+                    flash[:danger] = "Failed to checkout"
+                    return redirect_to '/home'
+                end
+                if !stay.orderable.stay_option.save()
+                    flash[:danger] = "Failed to checkout"
+                    return redirect_to '/home'
+                end
+            end
+
+            flash[:success] = "Checked out"
+            return redirect_to '/home'
+        else
+            flash[:danger] = "Loggin as vendor"
+            return redirect_to '/'
+        end
+    end
+
     private
-    def orderFood(items:, service_id:)
-        @order = Order.create!(user_id: @current_user.id)
+    def orderFood(items:, service:)
+        service_id = service.servicable_id
+        @order = service.orders.create!(user_id: @current_user.id)
 
         orders = Array.new
         items.each do |index, food|
@@ -68,8 +133,10 @@ class OrderController < ApplicationController
         return @order.save()
     end
 
-    def orderStay(items:, service_id:)
-        @stay_order = Order.new(user_id: @current_user.id)
+    private
+    def orderStay(items:, service:)
+        service_id = service.servicable_id
+        @stay_order = service.orders.create!(user_id: @current_user.id)
         
         p service_id
 

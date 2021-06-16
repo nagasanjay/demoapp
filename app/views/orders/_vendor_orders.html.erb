@@ -1,0 +1,73 @@
+<div class="modal fade" id="showVendorOrdersModal" tabindex="-1" role="dialog" aria-labelledby="showVendorOrdersModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="show-service-name"></h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body container" id="model_body">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Order Id</th>
+                    <th scope="col">User</th>
+                    <th scope="col">From</th>
+                    <th scope="col">Deliverable</th>
+                    <th scope="col">cost</th>
+                    <th scope="col">Delivery status</th>
+                </tr>
+            </thead>
+        <tbody>
+        <% for service in @current_user.services %>
+            <% @orders = service.orders %>
+            <% for order in @orders %>
+                <tr>
+                
+                <td><%= order.id %></td>
+                <% details = userDetails(order) %>
+                <td><%= details[:name] %><br /><%= details[:address] %><br /><%= details[:contact] %></td>
+                <td><strong><%= order.service.name+", "+order.service.servicable.locality %></strong></td>
+                <td><%= orderItems(order).join(", ") %></td>
+                <td><%= order.cost %></td>
+                <% if foodOrder?(order) %>
+                    <td><button class="btn btn-sm btn-primary <%= order.delivered ? 'disabled' : '' %>" onclick='deliver(<%= order.id %>)' data-dismiss='modal'><%= order.delivered ? "done" : "deliver"%> </button></td>
+                <% else %>
+                    <td><button class="btn btn-sm btn-primary <%= deliveryStatus(order) == "yet to checkin" ? '' : 'disabled' %>" onclick='checkin(<%= order.id %>)' data-dismiss='modal'><%= deliveryStatus(order) == "yet to checkin" ? "checkin" : "done"%></button>
+                    <button class="btn btn-sm btn-primary <%= deliveryStatus(order) == "checked out" || deliveryStatus(order) == "yet to checkin" ? 'disabled' : '' %>" onclick='checkout(<%= order.id %>)' data-dismiss='modal'><%= deliveryStatus(order) == "checked out" ? "done" : "checkout"%> </button></td>
+                <% end %>
+                </tr>
+            <% end %>
+        <% end %>
+        </tbody></table>
+        </div>
+        <div class="modal-footer">
+            
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+function deliver(order_id) {
+    $.ajax({ 
+        url: '/deliver/'+order_id,
+        type: 'POST',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+    });
+}
+function checkin(order_id) {
+    $.ajax({ 
+        url: '/checkin/'+order_id,
+        type: 'POST',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+    });
+}
+function checkout(order_id) {
+    $.ajax({ 
+        url: '/checkout/'+order_id,
+        type: 'POST',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+    });
+}
+</script>

@@ -1,44 +1,67 @@
-<div class="modal fade" id="showOrdersModal" tabindex="-1" role="dialog" aria-labelledby="showOrdersModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 class="modal-title" id="show-service-name"></h3>
+            <h3 class="modal-title" id="show-service-name">Search</h3>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="modal-body container" id="model_body">
-        <%= user_type %>
-        <table class="table table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Order Id</th>
-                    <th scope="col">Vendor</th>
-                    <th scope="col">includes</th>
-                    <th scope="col">cost</th>
-                    <th scope="col">Delivery status</th>
-                </tr>
-            </thead>
-        <tbody>
-        <% @orders = @current_user.orders %>
-        <% for order in @orders %>
-            <tr>
-            
-            <td><%= order.id %></td>
-            <td><%= vendorName(order) %></td>
-            <td><%= orderItems(order).join(", ") %></td>
-            <td><%= order.cost %></td>
-            <td><%= deliveryStatus(order) %></td>
-            <% 
-                items = 
-            %>
-            </tr>
-        <% end %>
-        </tbody></table>
-        </div>
-        <div class="modal-footer">
-            
+        <div class="modal-body container mx-auto" id="model_body">
+            <div class="input-group row mx-auto mb-2">
+                <div class="form-outline col-8">
+                    <input type="search" id="search" class="form-control" placeholder="search" required />
+                </div>
+                <button type="button" class="btn btn-primary col-sm-3 col-lg-2 btn-sm" onclick="searchServices()">
+                    search
+                </button>
+            </div>
+            <div class="input-group row mx-auto mb-2">
+                <label for="serviceType" class="col-4">Search Type</label>
+                <div class='col'>
+                    <div class="form-check" id="serviceType">
+                    <input class="form-check-input" type="radio" name="search_type" id="food" value="name" onclick="showTiming()" checked>
+                    <label class="form-check-label" for="food">Service Name</label>
+                    </div>
+                    <div class="form-check">
+                    <input class="form-check-input" type="radio" name="search_type" id="stay" value="locality" onclick="showAddress()">
+                    <label class="form-check-label" for="stay">Service area</label>
+                    </div>
+                </div>
+            </div>
+            <div id="results">
+            </div>
         </div>
     </div>
   </div>
 </div>
+<script>
+function searchServices() {
+    term = $("#search").val()
+    through = $('input[name="search_type"]:checked').val()
+    if (term.length == 0){
+        $("#search").addClass("is-invalid")
+        return
+    }
+    payload = {
+        search: term,
+        through: through
+    }
+    $.get("/search", payload, (data) => {
+        console.log(data)
+        if(data.length == 0){
+            $("#search").val("");
+            $("#search").attr("placeholder","No matches : try again");
+            return
+        }
+        s = "<ul class='list-group'>";
+        $.each(data, (index, result) => {
+            s += "<li class='list-group-item' onclick='showModal("+result.id+")' data-dismiss='modal'>";
+            s += result.name + ", " + result.area;
+            s += "</li>";
+        })
+        s += "</ul>";
+        $("#results").html(s)
+    })
+}
+</script>

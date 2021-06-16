@@ -1,8 +1,8 @@
 <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered " role="document">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 class="modal-title" id="serviceName"></h3>
+            <h3 class="modal-title" id="serviceName">Order</h3>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
@@ -10,7 +10,7 @@
         <div class="modal-body container-fluid" id="model_body">
         <div class="row">
         <div class="split left col">
-            <div class="centered row" id="options">
+            <div class="centered col" id="options">
                 
             </div>
         </div>
@@ -21,13 +21,16 @@
         </div>    
         </div>
         </div>
-        <div class="modal-footer" id="fitOrderButton">
-            
+        <div class="modal-footer">
+        Total Cost : <p id="totalCost"></p>
+        <div id="fitOrderButton"></div>
         </div>
     </div>
   </div>
 </div>
 <script>
+
+var names = []
 function orderFood(service_id){
     console.log(service_id)
     $.get( "/service/"+service_id, function( data ) {
@@ -50,9 +53,10 @@ function orderFood(service_id){
 
         // order
         s = "<form><div class='form-group'>"
-        foodNames = []
+        console.log(names)
+        names = []
         $.each(data.foods, (index, food) => {
-            foodNames.push(food.name)
+            names.push({name: food.name, cost: food.cost})
             s += "<div class='row mb-2'>";
             s += "<label for='"+food.name+"' class='col'>"+food.name+"</label>";
             s += "<input type='number' class='form-control col' id='"+food.name+"' min='0' max='"+food.available_count+"' onkeyup=imposeMinMax(this)>";
@@ -61,7 +65,7 @@ function orderFood(service_id){
         s += "</div></form>"
         $("#order").html(s);
         //document.getElementById("orderButton").addEventListener("click", "placeOrder(foodNames)");
-        $('#fitOrderButton').html('<button class="btn btn-primary" data-dismiss="modal" onclick="placeOrder(ID, stype, foodNames)" >Order</button>')
+        $('#fitOrderButton').html('<button class="btn btn-primary" data-dismiss="modal" onclick="placeOrder(ID, stype, names)" >Order</button>')
     });
     
     $('#orderModal').modal('show')
@@ -95,18 +99,19 @@ function orderStay(service_id){
 
         //order
         s = "<form><div class='form-group'>"
-        stayNames = []
+        console.log(names)
+        names = []
         $.each(data.stay_options, (index, option) => {
-            stayNames.push(option.name)
+            names.push({name: option.name,cost: option.cost})
             s += "<div class='row'>";
             s += "<label for='"+option.name+"' class='col'>"+option.name+"</label>";
-            s += "<input type='number' class='form-control col' id='"+option.name+"' min='0' max='"+option.available+"' onkeyup=imposeMinMax(this)>";
+            s += "<input type='number' class='form-control col' id='"+option.name+"' min='0' max='"+option.available+"' onChange=imposeMinMax(this)>";
             s += "</div>";
         })
         s += "</div></form>"
         $("#order").html(s);
         //document.getElementById("orderButton").addEventListener("click", "placeOrder(foodNames)");
-        $('#fitOrderButton').html('<button class="btn btn-primary" data-dismiss="modal" onclick="placeOrder(ID, stype, stayNames)" >Order</button>')
+        $('#fitOrderButton').html('<button class="btn btn-primary" data-dismiss="modal" onclick="placeOrder(ID, stype, names)" >Order</button>')
     });
     $('#orderModal').modal('show');
 };
@@ -120,15 +125,28 @@ function imposeMinMax(el){
       el.value = el.max;
     }
   }
+  calcCost();
 };
+
+function calcCost() {
+    cost = 0
+    $.each(names, (index, name) => {
+        val = document.getElementById(name.name).value;
+        if(val && val != "0")  {  
+            cost += parseInt(val) * parseInt(name.cost)
+        }
+    });
+    console.log(cost);
+    $("#totalCost").text(cost);
+}
 
 function placeOrder(id, type, names) {
     var items = [];
     $.each(names, (index, name) => {
-        val = document.getElementById(name).value;
+        val = document.getElementById(name.name).value;
         console.log(items);
         if(val && val != "0")  {  
-            items.push({name: name, count: val});
+            items.push({name: name.name, count: val});
             console.log(items);
         }
     });

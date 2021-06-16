@@ -1,7 +1,7 @@
 module OrderHelper
     def foodOrder? (order)
         p user_type
-        if order.order_types.first.orderable_type == "FoodOrder"
+        if order.service.servicable_type == "FoodService"
             return true
         else
             return false
@@ -9,7 +9,7 @@ module OrderHelper
     end
 
     def stayOrder? (order)
-        if order.order_types.first.orderable_type == "StayOrder"
+        if order.service.servicable_type == "StayService"
             return true
         else
             return false
@@ -18,17 +18,25 @@ module OrderHelper
 
     def vendorName (order)
         if foodOrder?(order)
-            return order.order_types.first.orderable.food.food_service.service.name
+            return order.service.name
         else
-            return order.order_types.first.orderable.stay_option.stay_service.service.name
+            return order.service.name
         end
+    end
+
+    def userDetails (order)
+        details = {
+            name: order.user.name,
+            address: order.user.address,
+            contact: order.user.phone_number
+        }
     end
 
     def orderItems (order)
         items = Array.new
         if foodOrder?(order)
             for item in order.order_types
-                items.push(item.orderable.food.name)
+                items.push("#{item.orderable.food.name} x #{item.orderable.quantity}")
             end
         else
             for item in order.order_types

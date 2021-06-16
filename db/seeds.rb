@@ -186,16 +186,18 @@ loc = Array["velachery", "Saidapet", "Guindy"]
 
     else
         
-        @order = Order.create!(user_id: @user.id)
+        @service = Service.first
+        @order = @service.orders.create!(user_id: @user.id)
 
+        @foods = @service.servicable.foods
         @food_orders = FoodOrder.create!([{
-            food_id: Food.first.id,
+            food_id: @foods.first.id,
             quantity: 2,
-            cost: Food.first.cost * 2
+            cost: @foods.first.cost * 2
         },{
-            food_id: Food.last.id,
+            food_id: @foods.last.id,
             quantity: 1,
-            cost: Food.last.cost
+            cost: @foods.last.cost
         }])
 
         for fo in @food_orders
@@ -212,9 +214,11 @@ loc = Array["velachery", "Saidapet", "Guindy"]
         @order.delivered = false
         @order.save()
 
-        @stay_order = Order.create!(user_id: @user.id)
+        @service = Service.last
+        @stay_order = @service.orders.create!(user_id: @user.id)
 
-        @s_order = StayOption.last.stay_orders.create!({cost: StayOption.last.cost})
+        @stay_option = @service.servicable.stay_options.last
+        @s_order = @stay_option.stay_orders.create!({cost: @stay_option.cost})
 
         @stay_order.order_types.create!({orderable: @s_order})
         @stay_order.delivered = true

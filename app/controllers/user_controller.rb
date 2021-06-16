@@ -13,6 +13,37 @@ class UserController < ApplicationController
         end
     end
 
+    def update
+        if logged_in?
+            if !params["name"].nil?
+                @current_user.name = params["name"]
+            end
+            if !params["email"].nil?
+                @current_user.email = params["email"]
+            end
+            if !params["phone"].nil?
+                @current_user.phone_number = params["phone"]
+            end
+            if !params["locality"].nil?
+                @current_user.locality = params["locality"]
+            end
+            if !params["address"].nil?
+                @current_user.address = params["address"]
+            end
+
+            if @current_user.save()
+                flash[:success] = "Profile updated successfully"
+            else
+                flash[:danger] = "Update failed"
+            end
+
+            return redirect_to '/home'
+        else
+            flash[:danger] = 'Loggin first'
+            redirect_to '/'
+        end
+    end
+
     def home
         if logged_in?
             if user_type == "user"

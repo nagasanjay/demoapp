@@ -1,5 +1,5 @@
 <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title" id="show-service-name"></h3>
@@ -24,9 +24,33 @@ function showModal(service_id){
     $.get( "/service/"+service_id, function( data ) {
 
         if(data.type == "FoodService"){
+            now = new Date();
+            hh = now.getHours();
+            mm = now.getMinutes();
+            
+            console.log(data)
+            var str1 = data.interval.timing[0].start;
+            var str2 = data.interval.timing[0].end;
+
+            str1 =  str1.split(':');
+            str2 =  str2.split(':');
+            var str3 = [hh.toString(), mm.toString()];
+
+            console.log(str1, str2, str3)
+
+            totalSeconds1 = parseInt(str1[0] * 3600 + str1[1] * 60 + str1[0]);
+            totalSeconds2 = parseInt(str2[0] * 3600 + str2[1] * 60 + str2[0]);
+            nowSeconds = parseInt(str3[0] * 3600 + str3[1] * 60 + str3[0]);
+
+            console.log(totalSeconds1, totalSeconds2, nowSeconds)
+
+            available = "not available";
+            if( totalSeconds1 <= nowSeconds && totalSeconds2 >= nowSeconds)
+                available = data.status == "available" ? "available" : "not available";
+            
             $('#removable').remove()
             $('#show-service-name').html("<b>"+data.name+"</b>")
-            $('#status').html(data.status)
+            $('#status').html(available)
             $('#locality').html(data.locality)
             $('#contact').html(data.contact_number)
             $('#model_body').append('<div class="row" id="removable"><b class="col">Foods: </b><div id="foods" class="col"></div></div>')

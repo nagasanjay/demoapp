@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_11_105049) do
+ActiveRecord::Schema.define(version: 2021_06_15_153916) do
 
   create_table "food_orders", charset: "latin1", force: :cascade do |t|
     t.integer "quantity"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 2021_06_11_105049) do
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "service_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 

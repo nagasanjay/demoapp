@@ -1,0 +1,64 @@
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="show-service-name">Profile</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body container" id="profile_model_body">
+            <div class="row"><span class="col-4">Name</span><input class="col-7 m-1" value="<%= @current_user.name%>" id="<%= @current_user.id%>-name" disabled> <i class="far fa-edit" onclick='toggleEdit("#<%= @current_user.id%>-name")'></i></div>
+            <div class="row"><span class="col-4">Email</span><input class="col-7 m-1" value="<%= @current_user.email%>" id="<%= @current_user.id%>-email" disabled> <i class="far fa-edit" onclick='toggleEdit("#<%= @current_user.id%>-email")'></i></div>
+            <div class="row"><span class="col-4">Phone Number</span><input class="col-7 m-1" value="<%= @current_user.phone_number%>" id="<%= @current_user.id%>-phone" disabled> <i class="far fa-edit" onclick='toggleEdit("#<%= @current_user.id%>-phone")'></i></span></div>
+            <div class="row"><span class="col-4">User Type</span><span class="col-7 m-1"><%= @current_user.userType%></span></div>
+            <div class="row"><span class="col-4">Locality</span><input class="col-7 m-1" value="<%= @current_user.locality%>" id="<%= @current_user.id%>-locality" disabled> <i class="far fa-edit" onclick='toggleEdit("#<%= @current_user.id%>-locality")'></i></div>
+            <div class="row"><span class="col-4">Address</span><input class="col-7 m-1" value="<%= @current_user.address%>" id="<%= @current_user.id%>-address" disabled>  <i class="far fa-edit" onclick='toggleEdit("#<%= @current_user.id%>-address")'></i></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="editButton" class="btn btn-primary disabled" onclick="editProfile(<%= @current_user.id%>)">Edit</button>
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+var edit = 0;
+function toggleEdit(id) {
+    var attr = $(id).attr("disabled");
+    if (typeof attr !== 'undefined' && attr !== false) {
+        $(id).attr("disabled", false)
+        edit -= 1;
+    } else {
+        $(id).attr("disabled", true)
+        edit += 1;
+    }
+
+    if(edit == 0){
+        $("#editButton").addClass("disabled");
+    } else {
+        $("#editButton").removeClass("disabled");
+    }
+}
+
+function editProfile(id) {
+    data = {};
+    if(!$("#"+id+"-name").prop("disabled"))
+        data.name = $("#"+id+"-name").val()
+    if(!$("#"+id+"-email").prop("disabled"))
+        data.email = $("#"+id+"-email").val()
+    if(!$("#"+id+"-phone").prop("disabled"))
+        data.phone = $("#"+id+"-phone").val()
+    if(!$("#"+id+"-locality").prop("disabled"))
+        data.locality = $("#"+id+"-locality").val()
+    if(!$("#"+id+"-address").prop("disabled"))
+        data.address = $("#"+id+"-address").val()
+
+    console.log(data)
+    $.ajax({ 
+        url: '/user',
+        type: 'PUT',
+        data: data,
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+    });
+}
+</script>

@@ -1,5 +1,5 @@
 <div class="modal fade" id="showOrdersModal" tabindex="-1" role="dialog" aria-labelledby="showOrdersModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title" id="show-service-name"></h3>
@@ -8,7 +8,6 @@
             </button>
         </div>
         <div class="modal-body container" id="model_body">
-        <%= user_type %>
         <table class="table table-bordered">
             <thead class="thead-dark">
                 <tr>
@@ -29,9 +28,6 @@
             <td><%= orderItems(order).join(", ") %></td>
             <td><%= order.cost %></td>
             <td><%= deliveryStatus(order) %></td>
-            <% 
-                items = 
-            %>
             </tr>
         <% end %>
         </tbody></table>
