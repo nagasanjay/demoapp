@@ -43,15 +43,15 @@ function toggleEdit(id) {
 function editProfile(id) {
     data = {};
     if(!$("#"+id+"-name").prop("disabled"))
-        data.name = $("#"+id+"-name").val()
+        data.name = $("#"+id+"-name").val().trim()
     if(!$("#"+id+"-email").prop("disabled"))
-        data.email = $("#"+id+"-email").val()
+        data.email = $("#"+id+"-email").val().trim()
     if(!$("#"+id+"-phone").prop("disabled"))
-        data.phone = $("#"+id+"-phone").val()
+        data.phone = $("#"+id+"-phone").val().trim()
     if(!$("#"+id+"-locality").prop("disabled"))
-        data.locality = $("#"+id+"-locality").val()
+        data.locality = $("#"+id+"-locality").val().trim()
     if(!$("#"+id+"-address").prop("disabled"))
-        data.address = $("#"+id+"-address").val()
+        data.address = $("#"+id+"-address").val().trim()
 
     console.log(data)
     $.ajax({ 

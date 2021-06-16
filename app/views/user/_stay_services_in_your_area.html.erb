@@ -1,6 +1,17 @@
 <div>
     <h2>Stay Services in your area</h2>
-    <% @nearby_services = StayService.where(locality: current_user.locality) %>
+    <% 
+        myids = Array.new
+        @current_user.services.each do |service|
+            myids.push(service.servicable_id)
+        end
+    %>
+    <% @nearby_services = StayService.where(locality: current_user.locality).where.not(id: myids) %>
+    <% if @nearby_services.count == 0 %>
+        <div class="row">
+            <div class="col-12 btn-warning text-center">No service in your area... Kindly search for services in nearby areas using th search feature.</div>
+        </div>
+    <% else %>
     <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
     <!--Indicators-->
         <% cards = 4; rem = @nearby_services.count%cards; q = @nearby_services.count/cards; %>
@@ -24,7 +35,7 @@
                     </div>
                     <div class="card-body">
                         <strong>Timing :</strong>24/7<br />
-                        <strong>Status :</strong><%= stayService.status %><br />
+                        <strong>Contact :</strong><%= stayService.contact_number %><br />
                         <a onclick='showModal(<%= stayService.service.id %>)'><u>Show details</u></a>
                     </div>
                 </div>
@@ -37,7 +48,9 @@
         <% end %>
         <% end %>
     </div>
+
     <!--/.Slides-->
 
     </div>
+    <%end%>
 </div>

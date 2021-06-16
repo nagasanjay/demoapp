@@ -29,8 +29,8 @@ function showModal(service_id){
             mm = now.getMinutes();
             
             console.log(data)
-            var str1 = data.interval.timing[0].start;
-            var str2 = data.interval.timing[0].end;
+            var str1 = data.interval.timing[0].start.trim();
+            var str2 = data.interval.timing[0].end.trim();
 
             str1 =  str1.split(':');
             str2 =  str2.split(':');
@@ -55,40 +55,58 @@ function showModal(service_id){
             $('#contact').html(data.contact_number)
             $('#model_body').append('<div class="row" id="removable"><b class="col">Foods: </b><div id="foods" class="col"></div></div>')
 
-            $("#foods").html("<ul>")
+            s = '<table class="table table-bordered"><thead class="thead-dark"><tr><th scope="col">Food</th><th scope="col">Cost</th></tr></thead><tbody>'
+            check_s = s;
             $.each(data.foods, (index, food) => {
-                $("#foods").append("<li>"+food.name+"</li>");
+                console.log(food.available_count)
+                if (food.available_count == 0)
+                    return true
+                s += "<tr>"
+                s += "<td>"+food.name+"</td>"
+                s += "<td>"+food.cost+"</td>"
+                s += "</tr>"
             })
-            $("#foods").append("</ul>")
-            $("#orderButton").attr("onclick","orderFood("+service_id+")");
+            nothing = false
+            if (s == check_s)
+                nothing = true
+            
+            if(nothing)
+                s = "No foods available"
+            else
+                s += "</tbody></table>"
+            $("#foods").html(s)
+            if(nothing)
+                $("#orderButton").addClass('disabled');
+            else
+                $("#orderButton").attr("onclick","orderFood("+service_id+")");
         } else if(data.type == "StayService") {
             $('#removable').remove()
             $('#show-service-name').html("<b>"+data.name+"</b>")
             $('#locality').html(data.locality)
             $('#contact').html(data.contact_number)
             $('#status').html(data.available == true ? "Available" : "Not Available")
-            $('#model_body').append('<div class="row" id="removable"><b class="col">Stay Options: </b><div id="stay" class="col"></div></div>')
+            $('#model_body').append('<div class="row" id="removable"><b class="col-2">Stay Options: </b><div id="stay" class="col"></div></div>')
 
-            $("#stay").html("<ul>")
-            $.each(data.stay_options, (index, stay) => {
-                s = "<li><b>"+stay.name+"</b><br>";
-                ss = "Amenities : ";
-                stay.includes.amenities.forEach((value)=>{
-                    ss += value + " "
-                })
-                ss += "<br>"
-                sss = "Bed Types :<ul>"
-                for (key in stay.includes.bed_type) {
-                    if(stay.includes.bed_type[key]){
-                        sss += "<li>"
+            s = '<table class="table table-bordered"><thead class="thead-dark"><tr><th scope="col">Stay option</th><th scope="col">Amenities</th><th scope="col">cost</th><th scope="col">Beds</th></tr></thead><tbody>'
+            $.each(data.stay_options, (index, option) => {
+                if (option.available == 0)
+                    return true
+                s += "<tr>";
+                s += "<td>"+option.name+"</td>";
+                s += "<td>"+option.includes.amenities.toString()+"</td>";
+                s += "<td>"+"Rs. "+option.cost+" / day"+"</td>";
+                sss = ""
+                for (key in option.includes.bed_type) {
+                    if(option.includes.bed_type[key]){
                         console.log(key)
-                        sss += key + " : " + stay.includes.bed_type[key] + "</li>";
+                        sss += key + " : " + option.includes.bed_type[key] + ", ";
                     }
-                }
-                sss += "</li></ul>"
-                s = s + ss + sss + "</li>"
-                $("#stay").append(s);
+                };
+                s += "<td>"+sss+"</td>";
+                s += "</tr>";
             })
+            $("#stay").html(s + "</tbody></table>")
+
             $("#orderButton").attr("onclick","orderStay("+service_id+")");
         }
         

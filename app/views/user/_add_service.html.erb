@@ -8,7 +8,7 @@
             </button>
         </div>
         <div class="modal-body container" id="model_body">
-            <form autocomplete="off" onsubmit="addService() ? false : false">
+            <form autocomplete="off" onsubmit="addService()">
             <div class="form-group row">
                 <label for="name" class="col-4">Name</label>
                 <input type="text" class="form-control col-7" id="name" placeholder="name" required>
@@ -45,7 +45,7 @@
             </div>
             <div class="form-group row">
                 <label for="contact_number" class="col-4">Contact Number</label>
-                <input type="text" pattern="\d*" maxlength="10" class="form-control col-7" id="contact_number" placeholder="Contact Number" required>
+                <input type="text" pattern="\d*" minlength="10" maxlength="10" class="form-control col-7" id="contact_number" placeholder="Contact Number" required>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" name="submit">Add</button>
@@ -76,19 +76,19 @@ function addService() {
     $("#addServiceModal").modal('hide')
     console.log("service")
     service = {
-        name: $("#name").val(),
-        locality: $("#location").val(),
-        type: $('input[name="service_type"]:checked').val(),
-        contact: $("#contact_number").val()
+        name: $("#name").val().trim(),
+        locality: $("#location").val().trim(),
+        type: $('input[name="service_type"]:checked').val().trim(),
+        contact: $("#contact_number").val().trim()
     }
 
     if(service.type == "FoodService"){
         service.timing = {
-            from: $("#from").val(),
-            to: $("#to").val()
+            from: $("#from").val().trim(),
+            to: $("#to").val().trim()
         }
     } else {
-        service.address = $("#address").val();
+        service.address = $("#address").val().trim();
     }
 
     $.ajax({ 
@@ -96,11 +96,11 @@ function addService() {
         type: 'POST',
         data: service,
         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-        success: function(response) {
+        success: (response) => {
+            console.log(response)
+            $('#app').prepend('<div class="alert alert-dismissible alert-success center-block" role="alert">Added service<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>')
             return false
         }
     });
-
-    return false
 }
 </script>

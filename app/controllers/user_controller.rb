@@ -2,14 +2,31 @@ class UserController < ApplicationController
 
     def create
         @user = User.new(user_params)
+        check = User.find_by(email: @user.email)
+
+        if !check.nil?
+            flash[:danger] = "email exists"
+            return redirect_to '/'
+        end
+
+        if @user.password.length < 8
+            flash[:danger] = "enter a password with atleast 8 characters"
+            return redirect_to '/'
+        end
+
+        if @user.phone_number.length != 10 or @user.phone_number[0] == '-'
+            flash[:danger] = "enter a valid 10 digit mobile number"
+            return redirect_to '/'
+        end
+
         if @user.save
             flash[:success] = "Signed up successfully.!"
             reset_session
 			log_in @user
-            redirect_to '/home'
+            return redirect_to '/home'
         else
             flash[:danger] = "Signup Failed"
-            redirect_to '/'
+            return redirect_to '/'
         end
     end
 
@@ -76,6 +93,8 @@ class UserController < ApplicationController
 
     private
     def user_params
+        p params
+        params[:user].each { |key, value| value.strip! }
         params.require(:user).permit(:name, :email, :password, 
             :locality, :address, :phone_number, :userType)
     end

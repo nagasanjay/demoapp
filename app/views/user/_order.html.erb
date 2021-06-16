@@ -56,10 +56,12 @@ function orderFood(service_id){
         console.log(names)
         names = []
         $.each(data.foods, (index, food) => {
+            if(food.available_count == 0)
+                return true
             names.push({name: food.name, cost: food.cost})
             s += "<div class='row mb-2'>";
             s += "<label for='"+food.name+"' class='col'>"+food.name+"</label>";
-            s += "<input type='number' class='form-control col' id='"+food.name+"' min='0' max='"+food.available_count+"' onkeyup=imposeMinMax(this)>";
+            s += "<input type='number' class='form-control col' id='"+food.name+"' min='0' max='"+food.available_count+"' onChange=imposeMinMax(this) onKeyUp=imposeMinMax(this)> ";
             s += "</div>";
         })
         s += "</div></form>"
@@ -102,10 +104,12 @@ function orderStay(service_id){
         console.log(names)
         names = []
         $.each(data.stay_options, (index, option) => {
+            if(option.available == 0)
+                return true
             names.push({name: option.name,cost: option.cost})
             s += "<div class='row'>";
-            s += "<label for='"+option.name+"' class='col'>"+option.name+"</label>";
-            s += "<input type='number' class='form-control col' id='"+option.name+"' min='0' max='"+option.available+"' onChange=imposeMinMax(this)>";
+            s += "<label for='"+option.name+"' class='col ml-5'>"+option.name+"</label>";
+            s += "<input type='number' class='form-control col mr-5' id='"+option.name+"' min='0' max='"+option.available+"' onChange=imposeMinMax(this) onKeyUp=imposeMinMax(this)>";
             s += "</div>";
         })
         s += "</div></form>"
@@ -118,10 +122,10 @@ function orderStay(service_id){
 
 function imposeMinMax(el){
   if(el.value != ""){
-    if(parseInt(el.value) < parseInt(el.min)){
+    if(parseInt(el.value.trim()) < parseInt(el.min.trim())){
       el.value = el.min;
     }
-    if(parseInt(el.value) > parseInt(el.max)){
+    if(parseInt(el.value.trim()) > parseInt(el.max.trim())){
       el.value = el.max;
     }
   }
@@ -131,8 +135,8 @@ function imposeMinMax(el){
 function calcCost() {
     cost = 0
     $.each(names, (index, name) => {
-        val = document.getElementById(name.name).value;
-        if(val && val != "0")  {  
+        val = document.getElementById(name.name).value.trim();
+        if(val && parseInt(val) > 0)  {  
             cost += parseInt(val) * parseInt(name.cost)
         }
     });
@@ -143,9 +147,9 @@ function calcCost() {
 function placeOrder(id, type, names) {
     var items = [];
     $.each(names, (index, name) => {
-        val = document.getElementById(name.name).value;
+        val = document.getElementById(name.name).value.trim();
         console.log(items);
-        if(val && val != "0")  {  
+        if(val && parseInt(val) > 0)  {  
             items.push({name: name.name, count: val});
             console.log(items);
         }

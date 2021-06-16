@@ -71,7 +71,7 @@ class ServiceController < ApplicationController
                 )
 
                 flash[:success] = "Created Service"
-                return redirect_to "/home"
+                return redirect_to "/"
             elsif params["type"] == "StayService"
                 @stay_service = StayService.create!({
                     contact_number: params["contact"],
@@ -87,7 +87,7 @@ class ServiceController < ApplicationController
                 )
 
                 flash[:success] = "Created Service"
-                return redirect_to "/home"
+                return redirect_to "/"
             end
         else
             render :json => {:error => "failed"}

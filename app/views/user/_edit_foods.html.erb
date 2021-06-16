@@ -1,0 +1,64 @@
+<div class="modal fade" id="editFoodModal" tabindex="-1" role="dialog" aria-labelledby="editFoodModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="serviceName">Edit Food count</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body container-fluid" id="model_body">
+            <div id="edit-food">
+                
+            </div>  
+        </div>
+        <div class="modal-footer">
+            <div id="editFoodButton"></div>
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+var foods = []
+var s_id;
+function showEditFoodModal(service_id){
+    s_id = service_id;
+    console.log(service_id)
+    $.get( "/service/"+service_id, function( data ) {
+        // order
+        s = "<form><div class='form-group'>"
+        console.log(foods)
+        foods = []
+        $.each(data.foods, (index, food) => {
+            foods.push(food.name)
+            s += "<div class='row mb-2'>";
+            s += "<label for='"+food.name+"' class='col-4'>"+food.name+"</label>";
+            s += "<input type='text' pattern='\d*' class='form-control col-7' id='"+food.name+"' min='0'>";
+            s += "</div>";
+        })
+        s += "</div></form>"
+        $("#edit-food").html(s);
+        //document.getElementById("orderButton").addEventListener("click", "placeOrder(foodNames)");
+        $('#editFoodButton').html('<button class="btn btn-primary" data-dismiss="modal" onclick="editFood()" >change</button>');
+    });
+    
+    $('#editFoodModal').modal('show');
+};
+
+function editFood() {
+    var items = {};
+    $.each(foods, (index, name) => {
+        val = document.getElementById(name).value.trim();
+        if(val.length == 0)
+            return true
+        items[name]= val;
+    });
+    console.log(items)
+    $.ajax({
+        url: '/food/'+s_id,
+        type: 'PUT',
+        data: {data: items},
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+    })
+}
+</script>

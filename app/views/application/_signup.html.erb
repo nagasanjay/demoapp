@@ -8,7 +8,7 @@
         </button>
         </div>
         <div class="modal-body">
-        <%= form_with(model: @user, scope: :user, url: '/signup', local: true) do |f| %>
+        <%= form_with(model: @user, scope: :user, url: '/signup', remote: true, html: { autocomplete: "off" }) do |f| %>
             <%= f.label :name, class: "col-3" %>
             <%= f.text_field :name, required: true, class: "col-auto" %><br />
             <%= f.label :email, class: "col-3" %>
@@ -30,7 +30,7 @@
             <%= f.label :address, class: "col-3" %>
             <%= f.text_field :address, required: true, class: "col-auto" %><br />
             <%= f.label :phone_number, class: "col-3" %>
-            <%= f.text_field :phone_number, required: true, length: 10, class: "col-auto" %><br />
+            <%= f.number_field :phone_number, required: true, html: {maxlength: 10, minlength: 10}, class: "col-auto" %><br />
         </div>
         <div class="modal-footer">
             <%= submit_tag "Signup"%>

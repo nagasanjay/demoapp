@@ -68,16 +68,16 @@ function addStayToService(service_id) {
         console.log(this)
         id = $(this).attr("id")
         if(id == "bcount"){
-            bed[type] = $(this).val();
+            bed[type] = $(this).val().trim();
         }else{
-            type = $(this).val();
+            type = $(this).val().trim();
         }
     });
     amenities = $("#stay-includes").val().split(',').map(s => s.trim());
     stay = {
-        name: $("#stay-name").val(),
-        room_number: $("#room").val(),
-        cost: $("#stay-cost").val(),
+        name: $("#stay-name").val().trim(),
+        room_number: $("#room").val().trim(),
+        cost: $("#stay-cost").val().trim(),
         includes: {
             amenities: amenities,
             bed_type: bed

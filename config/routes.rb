@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   post '/service', to: 'service#create'
   post '/order/:service', to: 'order#create'
   post '/food/:service_id', to: 'food#create'
+  put '/food/:service_id', to: 'food#update'
   post '/stay/:service_id', to: 'stay#create'
   get '/search', to: 'service#search'
   post '/deliver/:order_id', to: 'order#deliver'

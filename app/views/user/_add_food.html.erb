@@ -48,11 +48,11 @@ function addFoodToService(service_id) {
     $("#addFoodModal").modal("hide")
     includes = $("#includes").val().split(',').map(s => s.trim());
     food = {
-        name: $("#food-name").val(),
-        units: $("#unit").val(),
-        cost: $("#cost").val(),
+        name: $("#food-name").val().trim(),
+        units: $("#unit").val().trim(),
+        cost: $("#cost").val().trim(),
         includes: includes,
-        available_count: $("#available").val()
+        available_count: $("#available").val().trim()
     }
 
     console.log(food)
