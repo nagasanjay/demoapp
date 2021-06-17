@@ -19,6 +19,11 @@ class UserController < ApplicationController
             return redirect_to '/'
         end
 
+        if @user.address.length > 150 || @user.locality.length > 150
+            flash[:danger] = "address cannot exceed 150 characters"
+            return redirect_to '/'
+        end
+
         if @user.save
             flash[:success] = "Signed up successfully.!"
             reset_session
