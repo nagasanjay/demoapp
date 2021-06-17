@@ -105,17 +105,35 @@ class ServiceController < ApplicationController
                 response = Array.new
 
                 if params["through"] == "name"
-                    @results = Service.all.where("lower(name) LIKE :search", search: "%#{@parameter}%")
+                    ids = Array.new
+
+                    @current_user.services.each do |service|
+                        ids.push(service.id)
+                    end
+
+                    @results = Service.all.where("lower(name) LIKE :search", search: "%#{@parameter}%").where.not(id: ids)
                     
                     @results.each do |result|
                         response.push({
                             name: result.name,
                             area: result.servicable.locality,
-                            id: result.id
+                            id: result.id,
+                            type: result.servicable_type
                         })
                     end
                 elsif params["through"] == "locality"
-                    @results = FoodService.all.where("lower(locality) LIKE :search", search: "%#{@parameter}%")
+                    foodids = Array.new
+                    stayids = Array.new
+
+                    @current_user.services.each do |service|
+                        if service.servicable_type == "FoodService"
+                            foodids.push(service.servicable_id)
+                        else
+                            stayids.push(service.servicable_id)
+                        end
+                    end
+
+                    @results = FoodService.all.where("lower(locality) LIKE :search", search: "%#{@parameter}%").where.not(id: foodids)
 
                     @results.each do |result|
                         response.push({

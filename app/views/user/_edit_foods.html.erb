@@ -33,7 +33,7 @@ function showEditFoodModal(service_id){
             foods.push(food.name)
             s += "<div class='row mb-2'>";
             s += "<label for='"+food.name+"' class='col-4'>"+food.name+"</label>";
-            s += "<input type='text' pattern='\d*' class='form-control col-7' id='"+food.name+"' min='0'>";
+            s += "<input type='number' class='form-control col-7' id='"+food.name+"' min='0' max='99999' onKeyUp='imposeMinMax(this)' onChange='imposeMinMax(this)'>";
             s += "</div>";
         })
         s += "</div></form>"
@@ -43,6 +43,16 @@ function showEditFoodModal(service_id){
     });
     
     $('#editFoodModal').modal('show');
+};
+function imposeMinMax(el){
+  if(el.value != ""){
+    if(parseInt(el.value.trim()) < parseInt(el.min.trim())){
+      el.value = el.min.trim();
+    }
+    if(parseInt(el.value.trim()) > parseInt(el.max.trim())){
+      el.value = el.max.trim();
+    }
+  }
 };
 
 function editFood() {

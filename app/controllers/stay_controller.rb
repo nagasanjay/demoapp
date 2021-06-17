@@ -24,7 +24,8 @@ class StayController < ApplicationController
                     bed_type: params["includes"]["bed_type"],
                     amenities: params["includes"]["amenities"]
                 },
-                bed_count: bed_count
+                bed_count: bed_count,
+                available: true
             })
             flash[:success] = "Added Stay option"
             return redirect_to "/home"

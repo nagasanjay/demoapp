@@ -2,35 +2,41 @@
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 class="modal-title" id="show-service-name"></h3>
+            <h3 class="modal-title" id="show-service-name">Your Orders</h3>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
         </div>
         <div class="modal-body container" id="model_body">
+        <% @orders = @current_user.orders %>
+        <% if @orders.count == 0 %>
+            <div class="row">
+                <div class="col-12 btn-warning text-center">No orders. Start ordering.</div>
+            </div>
+        <% else %>
         <table class="table table-bordered">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Order Id</th>
                     <th scope="col">Vendor</th>
-                    <th scope="col">includes</th>
-                    <th scope="col">cost</th>
+                    <th scope="col">Includes</th>
+                    <th scope="col">Cost ( Rs. )</th>
                     <th scope="col">Delivery status</th>
                 </tr>
             </thead>
         <tbody>
-        <% @orders = @current_user.orders %>
         <% for order in @orders %>
             <tr>
             
             <td><%= order.id %></td>
             <td><%= vendorName(order) %></td>
-            <td><%= orderItems(order).join(", ") %></td>
+            <td><%= foodOrder?(order) ? "" : "Room No: " %><%= orderItems(order).join(", ") %></td>
             <td><%= order.cost %></td>
             <td><%= deliveryStatus(order) %></td>
             </tr>
         <% end %>
         </tbody></table>
+        <% end %>
         </div>
         <div class="modal-footer">
             
