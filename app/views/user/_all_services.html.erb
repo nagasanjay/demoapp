@@ -23,8 +23,8 @@
                     <strong> <%= service.name %> </strong>
                     </div>
                     <div class="card-body">
-                        <strong>Type :</strong><%= service.servicable_type %><br/>
-                        <strong>Locality :</strong><%= service.servicable.locality %><br />
+                        <strong>Type: </strong><%= service.servicable_type == "FoodService" ? "Food Supply" : "Stay" %><br/>
+                        <strong>Locality: </strong><%= service.servicable.locality %><br />
                         <a onclick='showModal(<%= service.id %>)'><u>Show details</u></a>
                     </div>
                 </div>

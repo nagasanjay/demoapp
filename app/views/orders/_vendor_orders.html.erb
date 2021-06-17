@@ -19,7 +19,7 @@
                     <th scope="col">User</th>
                     <th scope="col">From</th>
                     <th scope="col">Deliverable</th>
-                    <th scope="col">cost</th>
+                    <th scope="col">Cost (Rs. )</th>
                     <th scope="col">Delivery status</th>
                 </tr>
             </thead>
@@ -33,7 +33,7 @@
                 <% details = userDetails(order) %>
                 <td><%= details[:name] %><br /><%= details[:address] %><br /><%= details[:contact] %></td>
                 <td><strong><%= order.service.name+", "+order.service.servicable.locality %></strong></td>
-                <td><%= orderItems(order).join(", ") %></td>
+                <td><%= foodOrder?(order) ? "" : "Room No: " %><%= orderItems(order).join(", ") %></td>
                 <td><%= order.cost %></td>
                 <% if foodOrder?(order) %>
                     <td><button class="btn btn-sm btn-primary <%= order.delivered ? 'disabled' : '' %>" onclick='deliver(<%= order.id %>)' data-dismiss='modal'><%= order.delivered ? "done" : "deliver"%> </button></td>
